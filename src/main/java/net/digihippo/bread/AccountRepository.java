@@ -19,8 +19,7 @@ public class AccountRepository {
     }
 
     public void deposit(int accountId, int creditAmount) {
-        Accountable account = getAccount(accountId);
-        account.deposit(creditAmount);
+        getAccount(accountId).deposit(creditAmount);
     }
 
     public void placeOrder(int accountId, int orderId, int amount) {
