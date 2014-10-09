@@ -31,13 +31,7 @@ public class AccountRepository {
         Account account = accounts.get(accountId);
         if (account != null) {
             int cost = amount * priceOfBread;
-            if (account.getBalance() >= cost) {
-                account.addOrder(orderId, amount);
-                account.deposit(-cost);
-                events.orderPlaced(accountId, amount);
-            } else {
-                events.orderRejected(accountId);
-            }
+            account.placeOrder(orderId, amount, cost);
         } else {
             events.accountNotFound(accountId);
         }
@@ -48,18 +42,8 @@ public class AccountRepository {
         if (account == null)
         {
             events.accountNotFound(accountId);
-            return;
+        } else {
+            account.cancelOrder(orderId, priceOfBread);
         }
-
-        Integer cancelledQuantity = account.cancelOrder(orderId);
-        if (cancelledQuantity == null)
-        {
-            events.orderNotFound(accountId, orderId);
-            return;
-        }
-
-
-        events.orderCancelled(accountId, orderId);
-        account.deposit(cancelledQuantity * priceOfBread);
     }
 }
