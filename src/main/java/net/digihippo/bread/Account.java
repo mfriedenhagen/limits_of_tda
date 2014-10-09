@@ -15,7 +15,7 @@ public class Account {
         this.events.accountCreatedSuccessfully(accountId);
     }
 
-    public int getBalance() {
+    private int getBalance() {
         return balance;
     }
 
@@ -28,10 +28,6 @@ public class Account {
         orders.put(orderId, amount);
     }
 
-    Integer cancelOrder(int orderId) {
-        return orders.remove(orderId);
-    }
-
     public void placeOrder(int orderId, int amount, int cost) {
         if (getBalance() >= cost) {
             addOrder(orderId, amount);
@@ -42,8 +38,8 @@ public class Account {
         }
     }
 
-    public Integer cancelOrder(int orderId, int priceOfBread) {
-        Integer cancelledQuantity = cancelOrder(orderId);
+    public void cancelOrder(int orderId, int priceOfBread) {
+        Integer cancelledQuantity = orders.remove(orderId);
         if (cancelledQuantity == null)
         {
             events.orderNotFound(accountId, orderId);
@@ -52,6 +48,5 @@ public class Account {
             events.orderCancelled(accountId, orderId);
             deposit(cancelledQuantity * priceOfBread);
         }
-        return cancelledQuantity;
     }
 }
