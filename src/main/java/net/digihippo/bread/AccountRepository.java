@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AccountRepository {
-    private final Map<Integer, Account> accounts = new HashMap<Integer, Account>();
+    private final Map<Integer, Accountable> accounts = new HashMap<Integer, Accountable>();
     private final OutboundEvents events;
     private final int priceOfBread;
 
@@ -19,31 +19,53 @@ public class AccountRepository {
     }
 
     public void deposit(int accountId, int creditAmount) {
-        Account account = accounts.get(accountId);
-        if (account != null) {
-            account.deposit(creditAmount);
-        } else {
-            events.accountNotFound(accountId);
-        }
+        Accountable account = getAccount(accountId);
+        account.deposit(creditAmount);
     }
 
     public void placeOrder(int accountId, int orderId, int amount) {
-        Account account = accounts.get(accountId);
-        if (account != null) {
-            int cost = amount * priceOfBread;
-            account.placeOrder(orderId, amount, cost);
-        } else {
-            events.accountNotFound(accountId);
-        }
+        int cost = amount * priceOfBread;
+        getAccount(accountId).placeOrder(orderId, amount, cost);
     }
 
     public void cancelOrder(int accountId, int orderId) {
-        Account account = accounts.get(accountId);
-        if (account == null)
-        {
+        getAccount(accountId).cancelOrder(orderId, priceOfBread);
+    }
+
+    private Accountable getAccount(int accountId) {
+        final Accountable accountable = accounts.get(accountId);
+        if (accountable == null) {
             events.accountNotFound(accountId);
+            return NullAccount.INSTANCE;
         } else {
-            account.cancelOrder(orderId, priceOfBread);
+            return accountable;
+        }
+    }
+
+    private static class NullAccount implements Accountable {
+
+        final static NullAccount INSTANCE = new NullAccount();
+
+        @Override
+        public int getBalance() {
+            return 0;
+        }
+
+        @Override
+        public void deposit(int creditAmount) {
+
+        }
+
+        @Override
+        public void addOrder(int orderId, int amount) {
+        }
+
+        @Override
+        public void placeOrder(int orderId, int amount, int cost) {
+        }
+
+        @Override
+        public void cancelOrder(int orderId, int priceOfBread) {
         }
     }
 }
