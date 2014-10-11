@@ -14,7 +14,7 @@ public class AccountRepository {
     }
 
     public void createAccount(int id) {
-        Account newAccount = new Account(id, events);
+        Accountable newAccount = new Account(id, events);
         accounts.put(id, newAccount);
     }
 
@@ -51,20 +51,15 @@ public class AccountRepository {
         }
 
         @Override
-        public void deposit(int creditAmount) {
-
-        }
+        public void deposit(int creditAmount) {}
 
         @Override
-        public void addOrder(int orderId, int amount) {
-        }
+        public void addOrder(int orderId, int amount) {}
 
         @Override
-        public void placeOrder(int orderId, int amount, int cost) {
-        }
+        public void placeOrder(int orderId, int amount, int cost) {}
 
         @Override
-        public void cancelOrder(int orderId, int priceOfBread) {
-        }
+        public void cancelOrder(int orderId, int priceOfBread) {}
     }
 }
