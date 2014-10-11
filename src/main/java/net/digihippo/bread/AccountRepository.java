@@ -6,11 +6,9 @@ import java.util.Map;
 public class AccountRepository {
     private final Map<Integer, Accountable> accounts = new HashMap<Integer, Accountable>();
     private final OutboundEvents events;
-    private final int priceOfBread;
 
-    public AccountRepository(OutboundEvents events, int priceOfBread) {
+    public AccountRepository(OutboundEvents events) {
         this.events = events;
-        this.priceOfBread = priceOfBread;
     }
 
     public void createAccount(int id) {
@@ -18,20 +16,7 @@ public class AccountRepository {
         accounts.put(id, newAccount);
     }
 
-    public void deposit(int accountId, int creditAmount) {
-        getAccount(accountId).deposit(creditAmount);
-    }
-
-    public void placeOrder(int accountId, int orderId, int amount) {
-        int cost = amount * priceOfBread;
-        getAccount(accountId).placeOrder(orderId, amount, cost);
-    }
-
-    public void cancelOrder(int accountId, int orderId) {
-        getAccount(accountId).cancelOrder(orderId, priceOfBread);
-    }
-
-    private Accountable getAccount(int accountId) {
+    public Accountable withAccount(int accountId) {
         final Accountable accountable = accounts.get(accountId);
         if (accountable == null) {
             events.accountNotFound(accountId);
